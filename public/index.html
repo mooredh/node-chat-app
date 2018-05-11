@@ -11,17 +11,7 @@
 <body>
     <p>Welcome to Moore's CHAT APP!</p>
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-        let socket = io();
-
-        socket.on('connect', () => {
-            console.log('Connected to server');
-        })
-
-        socket.on('disconnect', () => {
-            console.log('Disconnected from server');
-        })
-    </script>
+    <script src="/js/index.js"></script>
 </body>
 
 </html>
