@@ -14,7 +14,6 @@ app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
     console.log('New user connected');
-
     socket.emit('newMessage', generateMessage('Admin', 'Welcome to Moore\'s chat app'));
 
     socket
@@ -22,7 +21,6 @@ io.on('connection', (socket) => {
         .emit('newMessage', generateMessage('Admin', 'New user joined'));
 
     socket.on('createMessage', function(newMessage, callback) {
-        console.log('Message Recieved', newMessage);
         io.emit('newMessage', generateMessage(newMessage.from, newMessage.text));
     });
 
