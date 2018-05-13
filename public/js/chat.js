@@ -15,13 +15,30 @@ function scrollToBottom() {
 }
 
 socket.on('connect', function() {
-    console.log('Connected to server');
+    let params = $.deparam(window.location.search);
 
+    socket.emit('join', params, (err) => {
+        if (err) {
+            alert(err);
+            window.location.href = '/';
+        } else {
+            console.log('no error');
+        }
+    });
 })
 
 socket.on('disconnect', function() {
     console.log('Disconnected from server');
-})
+});
+
+socket.on('updateUserList', (users) => {
+    let ul = $('<ul></ul>');
+    users.forEach(function(users) {
+        ul.append($('<li></li>').text(users));
+    });
+
+    $('#users').html(ul);
+});
 
 socket.on('newMessage', function(msg) {
     let template = $('#message-template').html();
@@ -79,3 +96,4 @@ locationButton.on('click', () => {
         alert('Unable to share location').text('Send Location');;
     });
 });
+console.log(users)
