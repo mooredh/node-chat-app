@@ -26,18 +26,18 @@ socket.on('newLocationMessage', (msg) => {
     $('#messages').append(li);
 })
 
-$('#message-form').on('submit', function(e) {
-        e.preventDefault();
+let messageTextbox = '[name = message]';
 
-        socket.emit('createMessage', {
-            from: 'User',
-            text: $('[name=message]').val()
-        })
-    }
-    /*, function(data2) {
-        console.log('Got it', data2);
-    }*/
-);
+$('#message-form').on('submit', function(e) {
+    e.preventDefault();
+
+    socket.emit('createMessage', {
+        from: 'User',
+        text: $(messageTextbox).val()
+    });
+
+    $(messageTextbox).val('');
+});
 
 let locationButton = $('#send-location');
 locationButton.on('click', () => {
@@ -45,12 +45,16 @@ locationButton.on('click', () => {
         return alert('Geolocation not supported by your browser');
     }
 
+    locationButton.attr('disabled', 'disabled').text('Sending...');
+
     navigator.geolocation.getCurrentPosition((position) => {
+        locationButton.removeAttr('disabled').text('Send Location');
         socket.emit('createLocationMessage', {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
         })
     }, () => {
-        alert('Unable to share location');
-    })
+        locationButton.removeAttr('disabled');
+        alert('Unable to share location').text('Send Location');;
+    });
 });
