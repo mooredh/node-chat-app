@@ -30,7 +30,7 @@ io.on('connection', (socket) => {
             return callback('Name and room name are required.');
         }
 
-        let sameName = users.getUserList(room).filter(user => user == params.name).length;
+        let sameName = users.getUserList(room).filter(user => user.toLowerCase() == params.name.toLowerCase()).length;
 
         if (sameName > 0) {
             return callback('Username Taken');
