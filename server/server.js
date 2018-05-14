@@ -25,19 +25,27 @@ io.on('connection', (socket) => {
     });
 
     socket.on('join', (params, callback) => {
+        let room = params.room.toLowerCase();
         if (!isRealString(params.name) || !isRealString(params.room)) {
             return callback('Name and room name are required.');
         }
-        socket.join(params.room);
-        users.removeUser(socket.id);
-        users.addUser(socket.id, params.name, params.room);
 
-        io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+        let sameName = users.getUserList(room).filter(user => user == params.name).length;
+
+        if (sameName > 0) {
+            return callback('Username Taken');
+        }
+
+        socket.join(room);
+        users.removeUser(socket.id);
+        users.addUser(socket.id, params.name, room);
+
+        io.to(room).emit('updateUserList', users.getUserList(room));
         socket.emit('newMessage', generateMessage('Admin', `Welcome to ${params.room} Chatroom`));
 
         socket
             .broadcast
-            .to(params.room)
+            .to(room)
             .emit('newMessage', generateMessage('Admin', `${params.name} has joined the room.`));
         callback();
     })
